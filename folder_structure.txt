@@ -1,0 +1,23 @@
+food-delivery-backend/
+├── controllers/
+│   ├── userController.js
+│   ├── adminController.js
+│   ├── restaurantOwnerController.js
+│   └── customerController.js
+├── models/
+│   ├── User.js
+│   ├── Admin.js
+│   ├── RestaurantOwner.js
+│   └── Customer.js
+|   └── BaseEntity.js
+├── config/
+│   └── db.js
+├── routes/
+│   ├── userRoutes.js
+│   ├── adminRoutes.js
+│   ├── restaurantOwnerRoutes.js
+│   └── customerRoutes.js
+├── middleware/
+│   └── authMiddleware.js
+├── index.js
+└── package.json
