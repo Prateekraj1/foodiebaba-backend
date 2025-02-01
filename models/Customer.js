@@ -1,40 +1,40 @@
+// models/Customer.js
 const { EntitySchema } = require('typeorm');
+const { ObjectId } = require('mongodb');
 const User = require('./User');
 
-const Customer = new EntitySchema({
+module.exports = new EntitySchema({
   name: 'Customer',
   tableName: 'customers',
   columns: {
-    id: {
-      type: 'int',
+    _id: {
+      type: ObjectId,
       primary: true,
       generated: true,
     },
     userId: {
-      type: 'int',
+      type: ObjectId,
       unique: true,
     },
     address: {
-      type: 'text',
+      type: 'string',
       nullable: true,
     },
     createdAt: {
       type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP',
+      createDate: true,
     },
     updatedAt: {
       type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP',
-      onUpdate: 'CURRENT_TIMESTAMP',
+      updateDate: true,
     },
   },
   relations: {
     user: {
       type: 'one-to-one',
-      target: User,
+      target: 'User',
       joinColumn: { name: 'userId' },
+      cascade: true,
     },
   },
 });
-
-module.exports = Customer;

@@ -1,31 +1,24 @@
+// config/db.js
 const { DataSource } = require('typeorm');
 const User = require('../models/User');
 const Admin = require('../models/Admin');
 const RestaurantOwner = require('../models/RestaurantOwner');
 const Customer = require('../models/Customer');
 
-require('reflect-metadata');
-
 const AppDataSource = new DataSource({
-  type: 'mysql',
+  type: 'mongodb',
   host: 'localhost',
-  port: 3306,
-  username: 'root',
-  password: '', // Set your password here if applicable
+  port: 27017,
   database: 'foodiebaba',
-  synchronize: true, // Automatically create tables
+  synchronize: false,
   logging: false,
-  entities: [
-    User,
-    Admin,
-    RestaurantOwner,
-    Customer,
-  ],
+  entities: [User, Admin, RestaurantOwner, Customer],
 });
+
 
 AppDataSource.initialize()
   .then(() => {
-    console.log('Database connected successfully.');
+    console.log('MongoDB connected successfully.');
   })
   .catch((err) => {
     console.error('Error during Data Source initialization:', err);

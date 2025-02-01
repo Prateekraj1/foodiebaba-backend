@@ -18,7 +18,9 @@
   "homepage": "https://github.com/Prateekraj1/foodiebaba-backend#readme",
   "description": "",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.21.2",
+    "mongodb": "^5.9.2",
     "mysql2": "^3.12.0",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.20"

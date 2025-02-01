@@ -1,36 +1,36 @@
+// models/Admin.js
 const { EntitySchema } = require('typeorm');
-const User = require('./User'); // Reference to User
+const { ObjectId } = require('mongodb');
+const User = require('./User');
 
-const Admin = new EntitySchema({
+module.exports = new EntitySchema({
   name: 'Admin',
   tableName: 'admins',
   columns: {
-    id: {
-      type: 'int',
+    _id: {
+      type: ObjectId,
       primary: true,
       generated: true,
     },
     userId: {
-      type: 'int',
-      unique: true, // One Admin per User
+      type: ObjectId,
+      unique: true,
     },
     createdAt: {
       type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP',
+      createDate: true,
     },
     updatedAt: {
       type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP',
-      onUpdate: 'CURRENT_TIMESTAMP',
+      updateDate: true,
     },
   },
   relations: {
     user: {
       type: 'one-to-one',
-      target: User, // One-to-one relation with User
-      joinColumn: { name: 'userId' }, // Foreign key column
+      target: 'User',
+      joinColumn: { name: 'userId' },
+      cascade: true,
     },
   },
 });
-
-module.exports = Admin;
