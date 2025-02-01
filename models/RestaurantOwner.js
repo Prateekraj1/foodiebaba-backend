@@ -1,43 +1,42 @@
+// models/RestaurantOwner.js
 const { EntitySchema } = require('typeorm');
-const User = require('./User');
+const { ObjectId } = require('mongodb');
 
-const RestaurantOwner = new EntitySchema({
+module.exports = new EntitySchema({
   name: 'RestaurantOwner',
   tableName: 'restaurant_owners',
   columns: {
-    id: {
-      type: 'int',
+    _id: {
+      type: ObjectId,
       primary: true,
       generated: true,
     },
     userId: {
-      type: 'int',
+      type: ObjectId,
       unique: true,
     },
     restaurantName: {
-      type: 'varchar',
+      type: 'string',
     },
     approvalStatus: {
       type: 'boolean',
-      default: false, // Default approval status as false
+      default: false,
     },
     createdAt: {
       type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP',
+      createDate: true,
     },
     updatedAt: {
       type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP',
-      onUpdate: 'CURRENT_TIMESTAMP',
+      updateDate: true,
     },
   },
   relations: {
     user: {
       type: 'one-to-one',
-      target: User,
+      target: 'User',
       joinColumn: { name: 'userId' },
+      cascade: true,
     },
   },
 });
-
-module.exports = RestaurantOwner;

@@ -1,41 +1,40 @@
+// models/User.js
 const { EntitySchema } = require('typeorm');
+const { ObjectId } = require('mongodb');
 
-const User = new EntitySchema({
-  name: 'User', // Entity name
-  tableName: 'users', // Table name
+module.exports = new EntitySchema({
+  name: 'User',
+  tableName: 'users',
   columns: {
-    id: {
-      type: 'int',
+    _id: {
+      type: ObjectId,
       primary: true,
-      generated: true, // Auto increment
+      generated: true,
     },
     name: {
-      type: 'varchar',
+      type: 'string',
     },
     email: {
-      type: 'varchar',
-      unique: true, // Unique email for each user
+      type: 'string',
+      unique: true,
     },
     uniqueKey: {
-        type: 'varchar',
-        unique: true, // Unique email for each user
+      type: 'string',
+      unique: true,
     },
     phoneNumber: {
-      type: 'varchar',
+      type: 'string',
     },
     password: {
-      type: 'varchar',
+      type: 'string',
     },
     createdAt: {
       type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP', // Default value for created_at
+      createDate: true,
     },
     updatedAt: {
       type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP', // Default value for updated_at
-      onUpdate: 'CURRENT_TIMESTAMP', // Update on every modification
+      updateDate: true,
     },
   },
 });
-
-module.exports = User;
