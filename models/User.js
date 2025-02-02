@@ -1,40 +1,42 @@
-// models/User.js
-const { EntitySchema } = require('typeorm');
-const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-module.exports = new EntitySchema({
-  name: 'User',
-  tableName: 'users',
-  columns: {
-    _id: {
-      type: ObjectId,
-      primary: true,
-      generated: true,
-    },
+const userSchema = new Schema(
+  {
     name: {
-      type: 'string',
+      type: String,
+      required: true,
     },
     email: {
-      type: 'string',
+      type: String,
+      required: true,
       unique: true,
     },
     uniqueKey: {
-      type: 'string',
+      type: String,
+      required: true,
       unique: true,
     },
     phoneNumber: {
-      type: 'string',
+      type: String,
+      required: true,
     },
     password: {
-      type: 'string',
+      type: String,
+      required: true,
     },
     createdAt: {
-      type: 'timestamp',
-      createDate: true,
+      type: Date,
+      default: Date.now,
     },
     updatedAt: {
-      type: 'timestamp',
-      updateDate: true,
+      type: Date,
+      default: Date.now,
     },
   },
-});
+  { timestamps: true }
+);
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;

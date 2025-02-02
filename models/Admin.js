@@ -1,36 +1,27 @@
-// models/Admin.js
-const { EntitySchema } = require('typeorm');
-const { ObjectId } = require('mongodb');
-const User = require('./User');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+const User = require('./User'); // Reference to User model
 
-module.exports = new EntitySchema({
-  name: 'Admin',
-  tableName: 'admins',
-  columns: {
-    _id: {
-      type: ObjectId,
-      primary: true,
-      generated: true,
-    },
+const adminSchema = new Schema(
+  {
     userId: {
-      type: ObjectId,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       unique: true,
+      required: true,
     },
     createdAt: {
-      type: 'timestamp',
-      createDate: true,
+      type: Date,
+      default: Date.now,
     },
     updatedAt: {
-      type: 'timestamp',
-      updateDate: true,
+      type: Date,
+      default: Date.now,
     },
   },
-  relations: {
-    user: {
-      type: 'one-to-one',
-      target: 'User',
-      joinColumn: { name: 'userId' },
-      cascade: true,
-    },
-  },
-});
+  { timestamps: true }
+);
+
+const Admin = mongoose.model('Admin', adminSchema);
+
+module.exports = Admin;

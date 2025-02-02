@@ -1,42 +1,35 @@
-// models/RestaurantOwner.js
-const { EntitySchema } = require('typeorm');
-const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+const User = require('./User'); // Reference to User model
 
-module.exports = new EntitySchema({
-  name: 'RestaurantOwner',
-  tableName: 'restaurant_owners',
-  columns: {
-    _id: {
-      type: ObjectId,
-      primary: true,
-      generated: true,
-    },
+const restaurantOwnerSchema = new Schema(
+  {
     userId: {
-      type: ObjectId,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       unique: true,
+      required: true,
     },
     restaurantName: {
-      type: 'string',
+      type: String,
+      required: true,
     },
     approvalStatus: {
-      type: 'boolean',
+      type: Boolean,
       default: false,
     },
     createdAt: {
-      type: 'timestamp',
-      createDate: true,
+      type: Date,
+      default: Date.now,
     },
     updatedAt: {
-      type: 'timestamp',
-      updateDate: true,
+      type: Date,
+      default: Date.now,
     },
   },
-  relations: {
-    user: {
-      type: 'one-to-one',
-      target: 'User',
-      joinColumn: { name: 'userId' },
-      cascade: true,
-    },
-  },
-});
+  { timestamps: true }
+);
+
+const RestaurantOwner = mongoose.model('RestaurantOwner', restaurantOwnerSchema);
+
+module.exports = RestaurantOwner;

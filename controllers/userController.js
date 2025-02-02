@@ -1,13 +1,13 @@
 // controllers/userController.js
-const bcrypt = require("bcrypt");
-const AppDataSource = require("../config/db");
-const User = require("../models/User");
-const Customer = require("../models/Customer");
-const RestaurantOwner = require("../models/RestaurantOwner");
-const Admin = require("../models/Admin");
-const { v4: uuidv4 } = require("uuid");
+const bcrypt = require('bcrypt');
+const User = require('../models/User');
+const Admin = require('../models/Admin');
+const RestaurantOwner = require('../models/RestaurantOwner');
+const Customer = require('../models/Customer');
+const { v4: uuidv4 } = require('uuid');
 
-// Register User
+
+//register user logic
 exports.registerUser = async (req, res) => {
   try {
     const {
@@ -21,53 +21,56 @@ exports.registerUser = async (req, res) => {
     } = req.body;
 
     if (!name || !email || !phoneNumber || !password || !role) {
-      return res
-        .status(200)
-        .json({ success: false, errorMessage: "Invalid Data" });
+      return res.status(200).json({
+        success: false,
+        errorMessage: "Invalid Data",
+      });
     }
 
-    const userRepo = AppDataSource.getMongoRepository(User);
-    const existingUser = await userRepo.findOne({ where: { email } });
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res
-        .status(200)
-        .json({ success: false, errorMessage: "Email already in use" });
+      return res.status(200).json({
+        success: false,
+        errorMessage: "Email already in use",
+      });
     }
 
     if (role !== "customer" && role !== "restaurant_owner") {
-      return res
-        .status(200)
-        .json({ success: false, errorMessage: "Invalid role" });
+      return res.status(200).json({
+        success: false,
+        errorMessage: "Invalid role",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const uniqueKey = uuidv4().split("-")[0]; // Generate a 12-character unique key
 
-    const user = userRepo.create({
+    const user = new User({
       name,
       email,
       phoneNumber,
-      password: hashedPassword,
       uniqueKey,
+      password: hashedPassword,
     });
 
-    await userRepo.save(user);
+    await user.save();
 
     let userRole;
     if (role === "customer") {
-      const customerRepo = AppDataSource.getMongoRepository(Customer);
-      const customer = customerRepo.create({ userId: user._id, address });
-      await customerRepo.save(customer);
+      const customer = new Customer({
+        userId: user._id,
+        address,
+      });
+      await customer.save();
       userRole = "customer";
     } else if (role === "restaurant_owner") {
-      const restaurantOwnerRepo =
-        AppDataSource.getMongoRepository(RestaurantOwner);
-      const restaurantOwner = restaurantOwnerRepo.create({
+      const restaurantOwner = new RestaurantOwner({
         userId: user._id,
         restaurantName,
       });
-      await restaurantOwnerRepo.save(restaurantOwner);
+      console.log('Saving Restaurant Owner:', restaurantOwner);
+      await restaurantOwner.save();
       userRole = "restaurant_owner";
     }
 
@@ -79,9 +82,13 @@ exports.registerUser = async (req, res) => {
       role: userRole,
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 };
+
 
 // Login User
 exports.loginUser = async (req, res) => {
@@ -89,31 +96,32 @@ exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(200)
-        .json({ success: false, errorMessage: "Invalid Data" });
+      return res.status(200).json({
+        success: false,
+        errorMessage: "Invalid Data",
+      });
     }
 
-    const userRepo = AppDataSource.getMongoRepository(User);
-    const user = await userRepo.findOne({ where: { email } });
+    const user = await User.findOne({ email });
 
     if (!user) {
-      return res
-        .status(200)
-        .json({ success: false, errorMessage: "Invalid data" });
+      return res.status(200).json({
+        success: false,
+        errorMessage: "Invalid data",
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res
-        .status(200)
-        .json({ success: false, errorMessage: "Invalid credentials" });
+      return res.status(200).json({
+        success: false,
+        errorMessage: "Invalid credentials",
+      });
     }
 
     const userId = user._id;
-    const customer = await AppDataSource.getMongoRepository(Customer).findOne({
-      where: { userId },
-    });
+
+    const customer = await Customer.findOne({ userId });
     if (customer) {
       const { password: _, ...userWithoutPassword } = user;
       return res.status(200).json({
@@ -124,9 +132,7 @@ exports.loginUser = async (req, res) => {
       });
     }
 
-    const restaurantOwner = await AppDataSource.getMongoRepository(
-      RestaurantOwner
-    ).findOne({ where: { userId } });
+    const restaurantOwner = await RestaurantOwner.findOne({ userId });
     if (restaurantOwner) {
       const { password: _, ...userWithoutPassword } = user;
       return res.status(200).json({
@@ -137,9 +143,7 @@ exports.loginUser = async (req, res) => {
       });
     }
 
-    const admin = await AppDataSource.getMongoRepository(Admin).findOne({
-      where: { userId },
-    });
+    const admin = await Admin.findOne({ userId });
     if (admin) {
       const { password: _, ...userWithoutPassword } = user;
       return res.status(200).json({
@@ -150,10 +154,14 @@ exports.loginUser = async (req, res) => {
       });
     }
 
-    return res
-      .status(200)
-      .json({ success: false, errorMessage: "User role not found" });
+    return res.status(200).json({
+      success: false,
+      errorMessage: "User role not found",
+    });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 };

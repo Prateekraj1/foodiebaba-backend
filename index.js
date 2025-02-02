@@ -1,10 +1,12 @@
 const express = require('express');
-const userRoutes = require('./routes/userRoutes');
-require('./config/db'); // Initialize DB connection
+const userRoutes = require('./routes/UserRoutes');
+const connectDB = require('./config/db');
+
 
 const app = express();
 app.use(express.json());
 
+connectDB();
 // Routes
 app.use('/api/users', userRoutes);
 
