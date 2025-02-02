@@ -27,8 +27,9 @@ const restaurantOwnerSchema = new Schema(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true, collection: 'restaurant_owners' }  // Explicitly set collection name
 );
+
 
 const RestaurantOwner = mongoose.model('RestaurantOwner', restaurantOwnerSchema);
 

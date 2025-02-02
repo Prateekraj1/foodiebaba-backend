@@ -23,7 +23,7 @@ const customerSchema = new Schema(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true, collection: 'customers' }
 );
 
 const Customer = mongoose.model('Customer', customerSchema);
