@@ -1,40 +1,31 @@
-// models/Customer.js
-const { EntitySchema } = require('typeorm');
-const { ObjectId } = require('mongodb');
-const User = require('./User');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+const User = require('./User'); // Reference to User model
 
-module.exports = new EntitySchema({
-  name: 'Customer',
-  tableName: 'customers',
-  columns: {
-    _id: {
-      type: ObjectId,
-      primary: true,
-      generated: true,
-    },
+const customerSchema = new Schema(
+  {
     userId: {
-      type: ObjectId,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       unique: true,
+      required: true,
     },
     address: {
-      type: 'string',
-      nullable: true,
+      type: String,
+      default: null,
     },
     createdAt: {
-      type: 'timestamp',
-      createDate: true,
+      type: Date,
+      default: Date.now,
     },
     updatedAt: {
-      type: 'timestamp',
-      updateDate: true,
+      type: Date,
+      default: Date.now,
     },
   },
-  relations: {
-    user: {
-      type: 'one-to-one',
-      target: 'User',
-      joinColumn: { name: 'userId' },
-      cascade: true,
-    },
-  },
-});
+  { timestamps: true, collection: 'customers' }
+);
+
+const Customer = mongoose.model('Customer', customerSchema);
+
+module.exports = Customer;
