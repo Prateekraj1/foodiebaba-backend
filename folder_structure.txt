@@ -9,7 +9,6 @@ food-delivery-backend/
 │   ├── Admin.js
 │   ├── RestaurantOwner.js
 │   └── Customer.js
-|   └── BaseEntity.js
 ├── config/
 │   └── db.js
 ├── routes/
